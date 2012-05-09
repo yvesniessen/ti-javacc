@@ -6,7 +6,7 @@ public class EG1 implements EG1Constants {
     while (true)
     {
       System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression like \u005c"1+(2+3)*4;\u005c" :");
+      System.out.print("Enter an while0-Program:");
       try
       {
         switch (EG1.program())
