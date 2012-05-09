@@ -9,17 +9,25 @@ public interface EG1Constants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int PLUS = 5;
+  int BEGIN = 5;
   /** RegularExpression Id. */
-  int MINUS = 6;
+  int END = 6;
   /** RegularExpression Id. */
-  int MULTIPLY = 7;
+  int DO = 7;
   /** RegularExpression Id. */
-  int DIVIDE = 8;
+  int WHILE = 8;
   /** RegularExpression Id. */
-  int CONSTANT = 9;
+  int ADD = 9;
   /** RegularExpression Id. */
-  int DIGIT = 10;
+  int ASSIGN = 10;
+  /** RegularExpression Id. */
+  int NOASSIGN = 11;
+  /** RegularExpression Id. */
+  int IDENT = 12;
+  /** RegularExpression Id. */
+  int NULL = 13;
+  /** RegularExpression Id. */
+  int ONE = 14;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -31,15 +39,17 @@ public interface EG1Constants {
     "\"\\r\"",
     "\"\\t\"",
     "\"\\n\"",
+    "\"begin\"",
+    "\"end\"",
+    "\"do\"",
+    "\"while\"",
     "\"+\"",
-    "\"-\"",
-    "\"*\"",
-    "\"/\"",
-    "<CONSTANT>",
-    "<DIGIT>",
+    "\"=\"",
+    "\"!=\"",
+    "<IDENT>",
+    "\"0\"",
+    "\"1\"",
     "\";\"",
-    "\"(\"",
-    "\")\"",
   };
 
 }
