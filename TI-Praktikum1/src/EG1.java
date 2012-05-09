@@ -79,7 +79,7 @@ public class EG1 implements EG1Constants {
       While();
       break;
     case IDENT:
-      Assignment();
+      AssignmentorIncrement();
       break;
     default:
       jj_la1[2] = jj_gen;
@@ -88,15 +88,28 @@ public class EG1 implements EG1Constants {
     }
   }
 
-  static final public void Assignment() throws ParseException {
+  static final public void AssignmentorIncrement() throws ParseException {
     jj_consume_token(IDENT);
     jj_consume_token(ASSIGN);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case NULL:
+      Assignment();
+      break;
+    case IDENT:
+      Increment();
+      break;
+    default:
+      jj_la1[3] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+  static final public void Assignment() throws ParseException {
     jj_consume_token(NULL);
   }
 
   static final public void Increment() throws ParseException {
-    jj_consume_token(IDENT);
-    jj_consume_token(ASSIGN);
     jj_consume_token(IDENT);
     jj_consume_token(ADD);
     jj_consume_token(ONE);
@@ -123,13 +136,13 @@ public class EG1 implements EG1Constants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[3];
+  static final private int[] jj_la1 = new int[4];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x9100,0x1100,0x1100,};
+      jj_la1_0 = new int[] {0x9100,0x1100,0x1100,0x3000,};
    }
 
   /** Constructor with InputStream. */
@@ -150,7 +163,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -164,7 +177,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -181,7 +194,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -191,7 +204,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -207,7 +220,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -216,7 +229,7 @@ public class EG1 implements EG1Constants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 3; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 4; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -272,7 +285,7 @@ public class EG1 implements EG1Constants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 4; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

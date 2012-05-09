@@ -28,9 +28,9 @@ public class EG1{  public static void main(String args []) throws ParseExcepti
 }
 
 int program() :{}{  sequence() ";"  {    return 0;  }| ";"  {    return 1;  }}void sequence() :{}{  statement()  (    statement()  )*}void statement() :{}{	  While()
-| Assign()}
+| AssignmentorIncrement()}
 
-void Assign() :
+void AssignmentorIncrement() :
 {}{  < IDENT > <ASSIGN > (Assignment() | Increment())
 }
 void Assignment() :{}{  <NULL >}void Increment() :{}{  <IDENT > <ADD > <ONE >}
