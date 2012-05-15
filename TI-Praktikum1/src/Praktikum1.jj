@@ -24,16 +24,16 @@ public class EG1{  public static void main(String args []) throws ParseExcepti
 	| < IDENT : "V"(["1"-"9"](["0"-"9"])*) >
 	| < NULL : "0" >
 	| < ONE : "1" >
- 
+	| < SEMI : ";" > 
 }
 
-int program() :{}{  sequence() ";"  {    return 0;  }| ";"  {    return 1;  }}void sequence() :{}{  statement()  (    statement()  )*}void statement() :{}{	  While()
+int program() :{}{  sequence()  {    return 0;  }| ";"  {    return 1;  }}void sequence() :{}{  statement()  (    statement()  )*}void statement() :{}{	  While()
 | AssignmentorIncrement()}
 
 void AssignmentorIncrement() :
-{}{  < IDENT > <ASSIGN > (Assignment() | Increment())
+{}{  < IDENT > <ASSIGN > (Assignment() | Increment()) <SEMI >
 }
-void Assignment() :{}{  <NULL >}void Increment() :{}{  <IDENT > <ADD > <ONE >}
+void Assignment() :{}{  <NULL >}void Increment() :{}{  <IDENT > <ADD > <ONE > >}
 
 void While() :
 {}
