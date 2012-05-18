@@ -1,6 +1,3 @@
-/**
- * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
- */
 options
 {
   JDK_VERSION = "1.5";
@@ -9,29 +6,42 @@ options
 
 PARSER_BEGIN(EG1)
 
+import java.util.HashMap;
+
 public class EG1
 {
+  private static String URM = new String();
+  private static HashMap<String, String > vars = new HashMap<String, String >();
+  private static int LineNr = 1;
+
+  private static String addVariable(String name)
+  {
+    String s = "R" + String.valueOf(vars.size()+1);
+    vars.put(name, s);
+    System.err.println("Adding Variable: name = "+name +" reg: " + s);	s = String.valueOf(LineNr++)+": " + s + "=0;\n";
+	return  s;
+  }
+
+  private static String getVariable(String name)
+  {
+    		if (vars.containsKey(name))
+		return vars.get(name);
+		else return null;  }
+  
   public static void main(String args []) throws ParseException
   {
     EG1 parser = new EG1(System.in);
 
    // while (true)
     {
-      System.out.println("Reading from standard input...");
+      System.out.println("Reading from standard input....");
       System.out.print("Enter an WHILE0 Program\":");
 	  //EG1.ReInit(System.in);
 
       try
       {
-        switch (EG1.program())
-        {
-          case 0 : 
-          System.out.println("OK.");
-          break;
-          case 1 : 
-          System.out.println("Goodbye.");
-          break;
-        }
+        String s = EG1.program();
+        System.out.println("#######Program#######\n"+s+"#######PROGRAM END########");
       }
       catch (Exception e)
       {
@@ -90,83 +100,110 @@ TOKEN : /* OPERATORS */
     | < IDENT: ["a"-"z" , "A"-"Z"](["a"-"z" , "A"-"Z" , "0"-"9"])* >		
 }
 
-
-int program() :
-{}
+String program() :
+{ String program = "", invardecl = "", outvardecl = "", helpvardecl = "", sequ = ""; }
 {
-  < IDENT > < LBRK > < IN >  ((< IDENT >) (inVar())*)? < SEMI > outVar() < RBRK > < SEMI >
-  < IDENT > < LBRK > runVar() < RBRK > < SEMI > 
+  < IDENT > < LBRK > < IN >  (invardecl = inVarList())?  { program += invardecl; } < SEMI > outvardecl = outVar() { program += outvardecl; } < RBRK > < SEMI >
+  < IDENT > < LBRK > (helpvardecl = helpVarList())? { program += helpvardecl; } < RBRK > < SEMI >
   
-  sequence() < EOF >
+  sequ = sequence() { program += sequ; } < EOF >
   {
-    return 0;
+    return program +String.valueOf(EG1.LineNr++)+": ;\n";
   }
 | < EOF >
   {
-    return 1;
+    return program;
   }
 }
 
-void sequence() :
-{}
+String sequence() :
+{ String s1 = "", s3 = "", s2 = ""; }
 {
-  statement()
+  s1 = statement()
   (
-    statement()
+    s3 = statement()    { s2 += s3; }
   )*
+{
+ //System.err.println("return s1:"+s1+" s2:"+s2);
+ return s1 + s2;}
+ // ((s1 = statement()) (s2 = statement())?)+
+//  {//    return s1 + s2;
+//  }
 }
 
-void inVar() :
-{}
+String inVar() :
+{ String s1 = ""; }
 {
-	< COMMA > < IDENT >
+	< IDENT > { s1 = addVariable(token.image); return s1;  }
 }
 
-void outVar() :
-{}
+String inVarList() :
+{ String s1 = "", s2 = ""; }
+{ s1 = inVar() (< COMMA > s2 = inVarList())? { return s1 + s2; }}
+
+String outVar() :
+{ Token t; }
 {
-	<  OUT > < IDENT >
+	<  OUT > t = < IDENT > { return addVariable(t.image); }
 }
 
-void runVar() :
+String helpVar() :
 {}
 {
-	(
-	  < IDENT >
-		(
-		  < COMMA > < IDENT >
-		)*
-	)?
-} 	
-
-void statement() :
-{}
-{
-	  While()
-| AssignmentorIncrement()
+	< IDENT > { return addVariable(token.image); }
 }
 
-void AssignmentorIncrement() :
-{}
+String helpVarList() :
+{ String s1 = "", s2 = ""; }
 {
-  < IDENT > <ASSIGN > (Assignment() | Increment()) < SEMI >
+ s1 = helpVar() (< COMMA > s2 = helpVarList())? { return s1 + s2; }
 }
 
-void Assignment() :
-{}
+String statement() :
+{ String s1 = "", s2 = "" ; int linenr = EG1.LineNr; }
 {
-  <NULL >
+ s2 = While() { s1 += s2 ; return s1; }
+| s2 = AssignmentorIncrement() {
+   s1 += s2 ;
+   return s1;  }
 }
 
-void Increment() :
-{}
+String AssignmentorIncrement() :
+{ String s1 = "", s2 = ""; Token t1; int linenr = EG1.LineNr; }
 {
-  <IDENT > <ADD > <ONE >
+  t1 = < IDENT > <ASSIGN > (s1 = Assignment() | s2 = Increment(getVariable(t1.image))) < SEMI >  {
+	if(s1!="")
+    return String.valueOf(EG1.LineNr++) +": "+getVariable(t1.image) + "=" + s1 + ";\n";
+    else if (s2!="")
+    return s2;  }
 }
 
-void While() :
+String Assignment() :
 {}
 {
-  < WHILE > <IDENT > <NOASSIGN > <IDENT > <DO > <BEGIN > sequence() < END >
+  <NULL >  {
+    return token.image;  }
+}
+
+String Increment(String name) :
+{ Token t; int linenr = EG1.LineNr; }
+{
+  t = <IDENT > <ADD > <ONE >
+  {
+   // System.err.println("Increment Name: "+name+"t.image: "+getVariable(t.image)); 
+	if(name==getVariable(t.image))
+    return String.valueOf(EG1.LineNr++)+": "+getVariable(t.image) + "++;\n";
+    else
+    {		return String.valueOf(EG1.LineNr++)+": COPY("+name+","+getVariable(t.image)+");\n"+String.valueOf(EG1.LineNr++) +": "  +name+"++;\n";
+    }
+  }
+}
+
+String While() :
+{ String s1 = ""; int linenr = EG1.LineNr; int oldnr = 0, gotonr = 0; Token v, w; }
+{
+  { oldnr = EG1.LineNr++; gotonr = EG1.LineNr; gotonr++; gotonr++; }    
+  < WHILE > v = <IDENT > <NOASSIGN > w = <IDENT > <DO > <BEGIN > (s1 = sequence())* < END >  {
+    return String.valueOf(oldnr) + ": if "+getVariable(v.image)+"=="+getVariable(w.image)+" goto " +String.valueOf(gotonr)+"\n" +s1 +String.valueOf(EG1.LineNr++)+ ": goto "+ String.valueOf(oldnr)+";\n";  }
 }
 
