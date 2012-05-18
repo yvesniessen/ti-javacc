@@ -40,8 +40,8 @@ public class EG1
 
       try
       {
-        String s = EG1.program();
-        System.out.println("#######Program#######\n"+s+"#######PROGRAM END########");
+        URM = EG1.program();
+        System.out.println("#######URM PROGRAM BEGIN#######\n"+URM+"#######URM PROGRAM END########");
       }
       catch (Exception e)
       {
@@ -200,10 +200,12 @@ String Increment(String name) :
 }
 
 String While() :
-{ String s1 = ""; int linenr = EG1.LineNr; int oldnr = 0, gotonr = 0; Token v, w; }
+{ String s1 = "", result = ""; int linenr = EG1.LineNr; int oldnr = 0, gotonr = 0; Token v, w; }
 {
-  { oldnr = EG1.LineNr++; gotonr = EG1.LineNr; gotonr++; gotonr++; }    
+  { oldnr = EG1.LineNr++; }    
   < WHILE > v = <IDENT > <NOASSIGN > w = <IDENT > <DO > <BEGIN > (s1 = sequence())* < END >  {
-    return String.valueOf(oldnr) + ": if "+getVariable(v.image)+"=="+getVariable(w.image)+" goto " +String.valueOf(gotonr)+"\n" +s1 +String.valueOf(EG1.LineNr++)+ ": goto "+ String.valueOf(oldnr)+";\n";  }
+     result = String.valueOf(oldnr) + ": if "+getVariable(v.image)+"=="+getVariable(w.image)+ " goto templabel\n" +s1 +String.valueOf(EG1.LineNr++)+ ": goto "+ String.valueOf(oldnr)+";\n";
+	 return result.replace("templabel", String.valueOf(EG1.LineNr));
+  }
 }
 
